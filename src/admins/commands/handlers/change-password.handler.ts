@@ -1,13 +1,13 @@
 import { ChangePasswordCommand } from '../implementation/change-password.comand';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AdminsService } from '../../services/admins.service';
 import { BadRequestException } from '@nestjs/common';
+import { AdminCommandService } from 'src/admins/services/admin-command.service';
 
 @CommandHandler(ChangePasswordCommand)
 export class ChangePasswordHandler
   implements ICommandHandler<ChangePasswordCommand>
 {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminCommandService) {}
   async execute(command: ChangePasswordCommand): Promise<any> {
     try {
       const { id, oldPassword, newPassword, confirmPassword } = command;

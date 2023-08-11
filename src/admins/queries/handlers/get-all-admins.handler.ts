@@ -1,11 +1,11 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
-import { AdminsService } from 'src/admins/services/admins.service';
 import { GetAllAdminsQuery } from '../implementation/get-all-admins.query';
 import { AdminEntity } from 'src/entities/admins.entity';
+import { AdminQueryService } from 'src/admins/services/admin-query.service';
 
 @QueryHandler(GetAllAdminsQuery)
 export class GetAllAdminsHandler implements IQueryHandler<GetAllAdminsQuery> {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminQueryService) {}
   async execute(query: GetAllAdminsQuery): Promise<AdminEntity[]> {
     try {
       return await this.adminsService.getAdmins();

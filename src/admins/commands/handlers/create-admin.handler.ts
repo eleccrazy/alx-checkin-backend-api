@@ -1,15 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateAdminCommand } from '../implementation/create-admin.command';
-import { AdminsService } from 'src/admins/services/admins.service';
-import { CreateAdminInterface } from 'src/admins/interfaces/admins.interface';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { AdminAuthService } from 'src/admins/services/auth/admin-auth.service';
+import { BadRequestException } from '@nestjs/common';
 
 @CommandHandler(CreateAdminCommand)
 export class CreateAdminHandler implements ICommandHandler<CreateAdminCommand> {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminAuthService) {}
   async execute(command: CreateAdminCommand): Promise<any> {
     try {
       const { confirmPassword, ...actualData } = command;
@@ -26,7 +22,7 @@ export class CreateAdminHandler implements ICommandHandler<CreateAdminCommand> {
           'Invalid role. Must be admin or attendant',
         );
       }
-      return await this.adminsService.createAdmin(actualData);
+      return await this.adminsService.signUpAdmin(actualData);
     } catch (error) {
       throw error;
     }

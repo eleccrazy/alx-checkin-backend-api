@@ -17,6 +17,39 @@ export interface IAdminsService {
   promoteAdmin(id: string, role: Role): Promise<AdminResponseType>;
 }
 
+// Interface to be implemented in the admin command service class
+export interface IAdminCommandService {
+  updateAdmin(
+    id: string,
+    payload: UpdateAdminInterface,
+  ): Promise<AdminResponseType>;
+  deleteAdmin(id: string): Promise<{ message: string }>;
+  promoteAdmin(id: string, role: Role): Promise<AdminResponseType>;
+  changePassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<AdminResponseType>;
+}
+
+// Interface to be implemented in the admin query service class
+export interface IAdminQueryService {
+  getAdminByEmail(email: string): Promise<AdminEntity>;
+  getAdminById(id: string): Promise<AdminResponseType>;
+  getAdmins(): Promise<AdminEntity[]>;
+}
+
+// Interface to be implemented in the admin auth service class
+export interface IAdminAuthService {
+  loginAdmin(data: {
+    email: string;
+    password: string;
+  }): Promise<AdminResponseWithTokenType>;
+  signUpAdmin(
+    payload: CreateAdminInterface,
+  ): Promise<AdminResponseWithTokenType>;
+}
+
 // Interface for typing the create admin object (payload)
 export interface CreateAdminInterface {
   firstName?: string;

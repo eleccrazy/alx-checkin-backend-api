@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AdminsService } from './services/admins.service';
 import { AdminsController } from './controllers/admins.controller';
 import { GetAllAdminsHandler } from './queries/handlers/get-all-admins.handler';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -13,7 +12,7 @@ import { UpdateAdminHandler } from './commands/handlers/update-admin.handler';
 import { PromoteAdminHandler } from './commands/handlers/promote-admin.handler';
 import { ChangePasswordHandler } from './commands/handlers/change-password.handler';
 import { LoginCommandHandler } from './commands/handlers/login-admin.handler';
-import { AdminAuthService } from './services/admin-auth.service';
+import { AdminAuthService } from './services/auth/admin-auth.service';
 import { AdminCommandService } from './services/admin-command.service';
 import { AdminQueryService } from './services/admin-query.service';
 
@@ -33,7 +32,6 @@ import { AdminQueryService } from './services/admin-query.service';
     }),
   ],
   providers: [
-    AdminsService,
     GetAllAdminsHandler,
     CreateAdminHandler,
     GetSingleAdminHandler,

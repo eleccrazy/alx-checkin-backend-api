@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AdminsService } from 'src/admins/services/admins.service';
 import { UpdateAdminCommand } from '../implementation/update-admin.command';
+import { AdminCommandService } from 'src/admins/services/admin-command.service';
 
 @CommandHandler(UpdateAdminCommand)
 export class UpdateAdminHandler implements ICommandHandler<UpdateAdminCommand> {
-  constructor(private adminService: AdminsService) {}
+  constructor(private adminService: AdminCommandService) {}
   async execute(command: UpdateAdminCommand): Promise<any> {
     try {
       // Get the id and payload  of the admin being updated

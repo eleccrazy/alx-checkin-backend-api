@@ -1,13 +1,13 @@
 import { PromoteAdminCommand } from '../implementation/promote-admin.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AdminsService } from '../../services/admins.service';
 import { BadRequestException } from '@nestjs/common';
+import { AdminCommandService } from 'src/admins/services/admin-command.service';
 
 @CommandHandler(PromoteAdminCommand)
 export class PromoteAdminHandler
   implements ICommandHandler<PromoteAdminCommand>
 {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminCommandService) {}
   async execute(command: PromoteAdminCommand): Promise<any> {
     try {
       const { id, role } = command;
