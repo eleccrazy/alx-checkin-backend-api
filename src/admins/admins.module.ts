@@ -13,6 +13,9 @@ import { UpdateAdminHandler } from './commands/handlers/update-admin.handler';
 import { PromoteAdminHandler } from './commands/handlers/promote-admin.handler';
 import { ChangePasswordHandler } from './commands/handlers/change-password.handler';
 import { LoginCommandHandler } from './commands/handlers/login-admin.handler';
+import { AdminAuthService } from './services/admin-auth.service';
+import { AdminCommandService } from './services/admin-command.service';
+import { AdminQueryService } from './services/admin-query.service';
 
 @Module({
   imports: [
@@ -39,6 +42,9 @@ import { LoginCommandHandler } from './commands/handlers/login-admin.handler';
     PromoteAdminHandler,
     ChangePasswordHandler,
     LoginCommandHandler,
+    AdminAuthService,
+    AdminCommandService,
+    AdminQueryService,
   ],
   controllers: [AdminsController],
 })
