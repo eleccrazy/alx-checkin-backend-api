@@ -7,32 +7,39 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { Role } from 'src/entities/admins.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 // This DTO is used to create a new admin
 export class RegisterAdminDto {
   @IsString()
   @IsOptional()
+  @ApiProperty()
   firstName: string;
 
   @IsString()
   @IsOptional()
+  @ApiProperty()
   lastName: string;
 
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
   @MinLength(8)
   @IsString()
   @IsNotEmpty()
   @Transform(({ value }) => value.trim()) // Trim the value before validation
+  @ApiProperty()
   password: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   confirmPassword: string;
 
   @IsOptional()
+  @ApiProperty()
   role: Role;
 }
 
@@ -40,14 +47,17 @@ export class RegisterAdminDto {
 export class UpdateAdminDto {
   @IsString()
   @IsOptional()
+  @ApiProperty()
   firstName: string;
 
   @IsString()
   @IsOptional()
+  @ApiProperty()
   lastName: string;
 
   @IsEmail()
   @IsOptional()
+  @ApiProperty()
   email: string;
 }
 
@@ -55,6 +65,7 @@ export class UpdateAdminDto {
 export class PromoteAdminDto {
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   role: Role;
 }
 
@@ -62,16 +73,19 @@ export class PromoteAdminDto {
 export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   oldPassword: string;
 
   @MinLength(8)
   @IsString()
   @IsNotEmpty()
   @Transform(({ value }) => value.trim()) // Trim the value before validation
+  @ApiProperty()
   newPassword: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   confirmPassword: string;
 }
 
@@ -79,9 +93,11 @@ export class ChangePasswordDto {
 export class LoginAdminDto {
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   password: string;
 }
