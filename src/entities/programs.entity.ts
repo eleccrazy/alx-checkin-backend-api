@@ -24,9 +24,6 @@ export class ProgramEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @Column({ nullable: true })
-  cohortInfo: string;
-
   @OneToMany(() => StudentEntity, (student) => student.program)
   students: StudentEntity[];
 

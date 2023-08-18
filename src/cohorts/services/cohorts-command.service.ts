@@ -138,6 +138,15 @@ export class CohortsCommandService implements ICohortsCommandService {
       ) {
         throw new NotFoundException(NOT_FOUND_MESSAGE);
       }
+      // If the error is a QueryFailedError with a foreign key constraint violation, re-throw it as a BadRequestException with a custom message.
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('violates foreign key constraint')
+      ) {
+        throw new BadRequestException(
+          'Cohort has child entities, cannot be deleted!',
+        );
+      }
       throw new InternalServerErrorException(SOMETHING_WENT_WRONG);
     }
   }

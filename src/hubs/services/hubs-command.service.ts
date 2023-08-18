@@ -92,6 +92,15 @@ export class HubsCommandService implements IHubsCommandService {
       ) {
         throw new NotFoundException(NOT_FOUND_ERROR);
       }
+      // If the error is a QueryFailedError with a foreign key constraint violation, re-throw it as a BadRequestException with a custom message.
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('violates foreign key constraint')
+      ) {
+        throw new BadRequestException(
+          'Hub has child entities, cannot be deleted!',
+        );
+      }
       throw new InternalServerErrorException(SOMETING_WENT_WRONG);
     }
   }

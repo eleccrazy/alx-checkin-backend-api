@@ -1,10 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as path from 'path';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api/v1');
+  app.use(
+    '/static/images/',
+    express.static(path.join(__dirname, '../public/qrcodes/')),
+  );
+
   const config = new DocumentBuilder()
     .setTitle('ALX Student Attendance Management System')
     .setDescription(

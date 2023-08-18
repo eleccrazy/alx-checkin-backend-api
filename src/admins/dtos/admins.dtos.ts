@@ -9,7 +9,7 @@ import { Transform } from 'class-transformer';
 import { Role } from 'src/entities/admins.entity';
 
 // This DTO is used to create a new admin
-export class CreateAdminDto {
+export class RegisterAdminDto {
   @IsString()
   @IsOptional()
   firstName: string;

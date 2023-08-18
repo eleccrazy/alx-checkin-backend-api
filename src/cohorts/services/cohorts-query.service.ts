@@ -31,7 +31,10 @@ export class CohortsQueryService implements ICohortsQueryService {
   async getSingleCohort(id: string): Promise<CohortEntity> {
     try {
       // Check if the cohort exists in the database
-      const cohort = await this.cohortRepository.findOneBy({ id: id });
+      const cohort = await this.cohortRepository.findOne({
+        where: { id: id },
+        relations: ['program'],
+      });
       if (!cohort) {
         throw new NotFoundException(NOT_FOUND_MESSAGE);
       }

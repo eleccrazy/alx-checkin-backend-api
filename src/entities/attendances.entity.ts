@@ -8,16 +8,16 @@ export class AttendanceEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   checkInTime: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   checkOutTime: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   totalTimeSpent: Date;
 
   @ManyToOne(() => StudentEntity, (student) => student.attendances)

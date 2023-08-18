@@ -10,7 +10,7 @@ import {
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import {
-  CreateAdminDto,
+  RegisterAdminDto,
   UpdateAdminDto,
   PromoteAdminDto,
   ChangePasswordDto,
@@ -37,11 +37,11 @@ export class AdminsController {
     return await this.queryBus.execute(new GetAllAdminsQuery());
   }
 
-  // Create a new admin
-  @Post()
-  @ApiOperation({ summary: 'Create a new admin' })
+  // Register a new admin
+  @Post('register')
+  @ApiOperation({ summary: 'Register a new admin' })
   @UsePipes(ValidationPipe)
-  async createAdmin(@Body() payload: CreateAdminDto) {
+  async createAdmin(@Body() payload: RegisterAdminDto) {
     const command = new CreateAdminCommand(
       payload.firstName,
       payload.lastName,

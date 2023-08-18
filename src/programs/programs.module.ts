@@ -1,16 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ProgramsController } from './controllers/programs.controller';
 import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+// Import entities and controllers assocaited with program
+import { ProgramsController } from './controllers/programs.controller';
+import { ProgramEntity } from 'src/entities/programs.entity';
+
+// Import all service classes associated with program
 import { ProgramsCommandService } from './services/programs-command.service';
 import { ProgramsQueryService } from './services/programs-query.service';
+
+// Import all handler classes associated with programs
 import { CreateProgramHandler } from './commands/handlers/create-program.handler';
 import { DeleteProgramHandler } from './commands/handlers/delete-program.handler';
 import { UpdateProgramHandler } from './commands/handlers/update-program.handler';
 import { GetAllProgramsHandler } from './queries/handlers/get-all-programs.handler';
 import { GetSingleProgramHandler } from './queries/handlers/get-single-program.handler';
 import { GetProgramCohortsHandler } from './queries/handlers/get-program-cohorts.handler';
-import { ProgramEntity } from 'src/entities/programs.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([ProgramEntity])],
