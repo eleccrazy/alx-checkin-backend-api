@@ -35,6 +35,7 @@ import { HubsModule } from 'src/hubs/hubs.module';
     CohortsModule,
     HubsModule,
   ],
+  exports: [StudentsQueryService],
   providers: [
     StudentsCommandService,
     StudentsQueryService,

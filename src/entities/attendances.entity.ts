@@ -20,7 +20,9 @@ export class AttendanceEntity {
   @Column({ type: 'timestamp', nullable: true })
   totalTimeSpent: Date;
 
-  @ManyToOne(() => StudentEntity, (student) => student.attendances)
+  @ManyToOne(() => StudentEntity, (student) => student.attendances, {
+    nullable: false,
+  })
   student: StudentEntity;
 
   @ManyToOne(() => HubEntity, (hub) => hub.attendances)
