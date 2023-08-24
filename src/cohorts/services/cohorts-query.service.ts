@@ -21,7 +21,10 @@ export class CohortsQueryService implements ICohortsQueryService {
   // Get all cohorts from the database
   async getAllCohorts(): Promise<CohortEntity[]> {
     try {
-      return await this.cohortRepository.find();
+      const cohorts = await this.cohortRepository.find({
+        relations: ['program'],
+      });
+      return cohorts;
     } catch (error) {
       throw new InternalServerErrorException(SOMETHING_WENT_WRONG);
     }

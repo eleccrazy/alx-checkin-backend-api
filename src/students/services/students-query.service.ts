@@ -35,7 +35,10 @@ export class StudentsQueryService implements IStudentQueryService {
   // Get a single student based on its id.
   async getSingleStudent(id: string): Promise<StudentEntity> {
     try {
-      const student = await this.studentRepository.findOneBy({ id: id });
+      const student = await this.studentRepository.findOne({
+        where: { id: id },
+        relations: ['program', 'cohort', 'hub'],
+      });
       // Check if the student exists
       if (!student) {
         throw new NotFoundException(NOT_FOUND);

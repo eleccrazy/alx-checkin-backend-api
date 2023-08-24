@@ -167,7 +167,7 @@ export class StudentsCommandService implements IStudentCommandService {
       if (payload.gender) {
         // Check if gender is a valid gender and is different
         if (payload.gender !== student.gender) {
-          if (!['Male', 'Femaile', 'Other'].includes(payload.gender)) {
+          if (!['Male', 'Female', 'Other'].includes(payload.gender)) {
             throw new BadRequestException(
               'Students gender must be one of the following: Male, Female, Other',
             );

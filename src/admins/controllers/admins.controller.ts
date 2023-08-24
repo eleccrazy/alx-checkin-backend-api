@@ -6,6 +6,7 @@ import {
   Post,
   Patch,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
@@ -56,6 +57,7 @@ export class AdminsController {
 
   // Login admin
   @Post('login')
+  @HttpCode(200)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Login admin' })
   async loginAdmin(@Body() payload: LoginAdminDto) {

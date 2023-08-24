@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('/api/v1');
   app.enableCors();
   app.use(
-    '/static/images/',
+    '/api/v1/static/images/',
     express.static(path.join(__dirname, '../public/qrcodes/')),
   );
 
