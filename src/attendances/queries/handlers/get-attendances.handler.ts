@@ -9,7 +9,7 @@ export class GetAllAttendancesHandler
   constructor(private readonly attendanceService: AttendancesQueryService) {}
   async execute(query: GetAllAttendancesQuery): Promise<any> {
     try {
-      return { message: 'From get  all attendances query handler' };
+      return await this.attendanceService.getAttendances();
     } catch (error) {
       throw error;
     }

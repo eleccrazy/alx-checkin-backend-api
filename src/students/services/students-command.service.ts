@@ -193,6 +193,14 @@ export class StudentsCommandService implements IStudentCommandService {
           isThereAnyThingToUpdate = true;
         }
       }
+      // Check if we have attendanceId
+      if (
+        payload.attendanceId ||
+        (!payload.attendanceId && payload.attendanceId === null)
+      ) {
+        student.attendanceId = payload.attendanceId;
+        isThereAnyThingToUpdate = true;
+      }
 
       // Check if we have something to be udpated
       if (!isThereAnyThingToUpdate) {

@@ -1,3 +1,3 @@
 export class CheckoutAttendanceCommand {
-  constructor(public readonly id: string) {}
+  constructor(public readonly id: string, public readonly studentId: string) {}
 }

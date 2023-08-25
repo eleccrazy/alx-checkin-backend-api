@@ -56,8 +56,8 @@ export class StudentEntity {
   @Column({ nullable: true })
   area: string;
 
-  @Column({ default: false, nullable: true })
-  checkInStatus: boolean;
+  @Column({ nullable: true })
+  attendanceId: string;
 
   @Column({ nullable: true })
   qrRemotePath: string;

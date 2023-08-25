@@ -16,6 +16,12 @@ import { CreateAttendanceCommand } from '../commands/implementation/create-atten
 import { DeleteAttendanceCommand } from '../commands/implementation/delete-attendance.command';
 import { CheckoutAttendanceCommand } from '../commands/implementation/checkout-attendance.command';
 
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  CheckoutAttendanceDto,
+  CreateAttendanceDto,
+} from '../dtos/attendances.dtos';
+
 @Controller('attendances')
 @ApiTags('Documentation for attendances route')
 export class AttendancesController {
@@ -35,7 +41,8 @@ export class AttendancesController {
   @ApiOperation({
     summary: 'Create a new attendance record | Check in the student',
   })
-  async createAttendance(@Body() payload: any) {
+  @UsePipes(ValidationPipe)
+  async createAttendance(@Body() payload: CreateAttendanceDto) {
     const command = new CreateAttendanceCommand(
       payload.studentId,
       payload.hubId,
@@ -52,10 +59,13 @@ export class AttendancesController {
   }
 
   // Check out attendance
-  @Patch(':id/checkout')
+  @Patch(':id/check-out')
   @ApiOperation({ summary: 'Check out attendance for a student' })
-  async checkoutAttendance(@Param('id') id: string) {
-    const command = new CheckoutAttendanceCommand(id);
+  async checkoutAttendance(
+    @Param('id') id: string,
+    @Body() payload: CheckoutAttendanceDto,
+  ) {
+    const command = new CheckoutAttendanceCommand(id, payload.studentId);
     return await this.commandBus.execute(command);
   }
 

@@ -10,6 +10,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { HubsQueryService } from 'src/hubs/services/hubs-query.service';
+import { StudentsCommandService } from 'src/students/services/students-command.service';
 
 const SERVER_ERROR = 'Something went wrong!';
 
@@ -21,25 +22,31 @@ export class AttendancesCommandService implements IAttendancesCommandService {
     private readonly studentService: StudentsQueryService,
     private readonly hubService: HubsQueryService,
     private readonly attendanceService: AttendancesQueryService,
+    private readonly studentCommandService: StudentsCommandService,
   ) {}
 
   async createAttendance(
     studentId: string,
-    hubId: string,
+    hubId?: string,
   ): Promise<AttendanceEntity> {
     try {
       // Check if the student exists
       const student = await this.studentService.getSingleStudent(studentId);
-      // Check if hub exits
-      const hub = await this.hubService.getSingleHub(hubId);
       // Check if the student has already checked in
+      if (student.attendanceId) {
+        throw new BadRequestException('Student has already checked in');
+      }
       // Create new attendance
       const attendance = new AttendanceEntity();
       // Update the fileds of the attendance object
       attendance.student = student;
-      attendance.hub = hub;
+      attendance.checkInTime = new Date();
       // Save the changes
       const newAttendance = await this.attendanceRepository.save(attendance);
+      // Change the attendanceId field of the student to the id of the attendance being created
+      await this.studentCommandService.updateStudent(student.id, {
+        attendanceId: newAttendance.id,
+      });
       return newAttendance;
     } catch (error) {
       if (
@@ -70,13 +77,37 @@ export class AttendancesCommandService implements IAttendancesCommandService {
     }
   }
 
-  async checkOutAttendances(id: string): Promise<AttendanceEntity> {
+  async checkOutAttendances(
+    id: string,
+    studentId: string,
+  ): Promise<AttendanceEntity> {
     try {
       // Check if attendance exists
       const attendance = await this.attendanceService.getSingleAttendance(id);
+      if (!attendance) {
+        throw new BadRequestException('Student did not checked in');
+      }
+      // Check if the student exists
+      const student = await this.studentService.getSingleStudent(studentId);
+      // Set the attendanceId field to null
+      await this.studentCommandService.updateStudent(student.id, {
+        attendanceId: null,
+      });
       // Check out the student
       attendance.checkOutTime = new Date();
       // TODO: Calculate the total time spent and udpate the attendace object
+      // Calculate the total time spent in hours
+      const checkInTime = attendance.checkInTime;
+      const checkOutTime = attendance.checkOutTime;
+      const totalTimeSpentMs = checkOutTime.getTime() - checkInTime.getTime();
+      const totalTimeSpentHours = totalTimeSpentMs / 3600000;
+      // Update the attendance object with the total time spent
+      attendance.totalTimeSpent = totalTimeSpentHours;
+      // Update the attendance object with the week days.
+      attendance.day = checkInTime.toLocaleString('en-US', { weekday: 'long' });
+      // Update the attendance object with month and year
+      attendance.month = checkInTime.getMonth();
+      attendance.year = checkInTime.getFullYear();
       const updatedAttendance = await this.attendanceRepository.save(
         attendance,
       );

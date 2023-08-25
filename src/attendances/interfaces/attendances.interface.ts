@@ -8,7 +8,10 @@ export interface IAttendancesQueryService {
 
 // Define an interface that should be implemented on the attendance command service class
 export interface IAttendancesCommandService {
-  createAttendance(studentId: string, hubId: string): Promise<AttendanceEntity>;
+  createAttendance(
+    studentId: string,
+    hubId?: string,
+  ): Promise<AttendanceEntity>;
   deleteAttendance(id: string): Promise<{ message: string }>;
-  checkOutAttendances(id: string): Promise<AttendanceEntity>;
+  checkOutAttendances(id: string, studentId: string): Promise<AttendanceEntity>;
 }

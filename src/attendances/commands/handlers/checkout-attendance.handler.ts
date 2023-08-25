@@ -9,7 +9,10 @@ export class CheckoutAttendanceHandler
   constructor(private readonly attendaceService: AttendancesCommandService) {}
   async execute(command: CheckoutAttendanceCommand): Promise<any> {
     try {
-      return { message: 'From Checkout attendance command handler' };
+      return await this.attendaceService.checkOutAttendances(
+        command.id,
+        command.studentId,
+      );
     } catch (error) {
       throw error;
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { IAttendancesQueryService } from '../interfaces/attendances.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
@@ -28,8 +28,11 @@ export class AttendancesQueryService implements IAttendancesQueryService {
 
   async getSingleAttendance(id: string): Promise<AttendanceEntity> {
     try {
-      const student = await this.attendanceRepository.findOneBy({ id: id });
-      return student;
+      const attendace = await this.attendanceRepository.findOneBy({ id: id });
+      if (!attendace) {
+        throw new NotFoundException('Attendance not found');
+      }
+      return attendace;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -41,6 +44,7 @@ export class AttendancesQueryService implements IAttendancesQueryService {
       ) {
         throw new NotFoundException(NOT_FOUND_MESSAGE);
       }
+      throw new InternalServerErrorException('Something went wrong!');
     }
   }
 }

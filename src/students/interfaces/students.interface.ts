@@ -52,6 +52,7 @@ export interface UpdateStudentInterface {
   hubId?: string;
   area?: string;
   city?: string;
+  attendanceId?: string;
 }
 
 // Custom interface for changing a student's program and cohort

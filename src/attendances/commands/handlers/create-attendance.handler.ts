@@ -6,9 +6,13 @@ import { AttendancesCommandService } from 'src/attendances/services/attendances-
 export class CreateAttendanceHandler
   implements ICommandHandler<CreateAttendanceCommand>
 {
+  constructor(private readonly attendanceService: AttendancesCommandService) {}
   async execute(command: CreateAttendanceCommand): Promise<any> {
     try {
-      return { message: 'From create attendance command handler' };
+      return await this.attendanceService.createAttendance(
+        command.studentId,
+        command.hubId,
+      );
     } catch (error) {
       throw error;
     }
