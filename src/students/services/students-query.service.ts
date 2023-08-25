@@ -112,7 +112,6 @@ export class StudentsQueryService implements IStudentQueryService {
       ) {
         throw new NotFoundException(NOT_FOUND);
       }
-      console.log(error);
       throw new InternalServerErrorException(SERVER_ERROR);
     }
   }

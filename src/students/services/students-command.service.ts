@@ -80,7 +80,6 @@ export class StudentsCommandService implements IStudentCommandService {
         );
       }
       // Update the student with the path
-      student.qrLocalPath = localPath.path;
       const updatedStudent = await this.studentRepository.save(student);
 
       return updatedStudent;
