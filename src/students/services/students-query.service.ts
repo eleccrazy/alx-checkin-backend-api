@@ -115,4 +115,55 @@ export class StudentsQueryService implements IStudentQueryService {
       throw new InternalServerErrorException(SERVER_ERROR);
     }
   }
+
+  // Get total number of students, guests, and students per program.
+  async getStudentsStats(): Promise<{
+    totalStudents: number;
+    totalGuests: number;
+    totalLearners: number;
+    studentsPerProgram: { program: string; count: number }[];
+    perProgramPercent: { program: string; percent: number }[];
+  }> {
+    try {
+      // Get total number of students
+      const totalStudents = await this.studentRepository.count();
+      // Get total number of guests
+      const totalGuests = await this.studentRepository.count({
+        where: { isAlumni: true },
+      });
+      // Get total number of learners
+      const totalLearners = await this.studentRepository.count({
+        where: { isAlumni: false },
+      });
+      // Get total number of students per program
+      const studentsPerProgram = await this.studentRepository
+        .createQueryBuilder('student')
+        .select('program.name', 'program')
+        .addSelect('COUNT(*)', 'count')
+        .leftJoin('student.program', 'program')
+        .groupBy('program.name')
+        .getRawMany();
+      // Calculate the percentage of students per program by comparing the count with the total number of studens.
+      // Replace the count key with percent and calculate the percent value for each program
+      const perProgramPercent = studentsPerProgram
+        .map((prog) => {
+          const percentage = parseFloat(
+            ((prog.count / totalStudents) * 100).toFixed(2),
+          );
+          return { program: prog.program, percent: percentage };
+        })
+        .sort((a, b) => b.percent - a.percent);
+
+      return {
+        totalStudents,
+        totalGuests,
+        totalLearners,
+        studentsPerProgram,
+        perProgramPercent,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
 }

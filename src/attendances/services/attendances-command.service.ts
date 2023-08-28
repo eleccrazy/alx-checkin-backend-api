@@ -82,17 +82,17 @@ export class AttendancesCommandService implements IAttendancesCommandService {
     studentId: string,
   ): Promise<AttendanceEntity> {
     try {
-      // Check if attendance exists
-      const attendance = await this.attendanceService.getSingleAttendance(id);
-      if (!attendance) {
-        throw new BadRequestException('Student did not checked in');
-      }
       // Check if the student exists
       const student = await this.studentService.getSingleStudent(studentId);
       // Set the attendanceId field to null
       await this.studentCommandService.updateStudent(student.id, {
         attendanceId: null,
       });
+      // Check if attendance exists
+      const attendance = await this.attendanceService.getSingleAttendance(id);
+      if (!attendance) {
+        throw new BadRequestException('Student did not checked in');
+      }
       // Check out the student
       attendance.checkOutTime = new Date();
       // TODO: Calculate the total time spent and udpate the attendace object

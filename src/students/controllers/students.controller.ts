@@ -28,6 +28,7 @@ import { GetSingleStudentQuery } from '../queries/implementation/get-single-stud
 import { GetLearnersQuery } from '../queries/implementation/get-learners.query';
 import { GetGuestsQuery } from '../queries/implementation/get-guests.query';
 import { GetStudentQRCodeQuery } from '../queries/implementation/get-student-qrcode.query';
+import { GetStudentsStatsQuery } from '../queries/implementation/get-student-stats.query';
 
 @ApiTags('Documentation for students route')
 @Controller('students')
@@ -75,6 +76,14 @@ export class StudentsController {
     return await this.commandBus.execute(command);
   }
 
+  // Handle get request for total number of students, guests, and students per program.
+  @ApiOperation({
+    summary: 'Get total number of students, guests, and students per program',
+  })
+  @Get('stats')
+  async getStudentsStats() {
+    return await this.queryBus.execute(new GetStudentsStatsQuery());
+  }
   // Handle get request for /students/:id
   @ApiOperation({ summary: 'Get a single student' })
   @Get(':id')
