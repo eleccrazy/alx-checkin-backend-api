@@ -17,6 +17,20 @@ const SERVER_ERROR = 'Something went wrong';
 
 const qrImageProcesser = new QRImageProcesser();
 
+// Helper function to get the day of the week
+function getDayOfWeek(date) {
+  const daysOfWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  return daysOfWeek[date.getDay()];
+}
+
 @Injectable()
 export class StudentsQueryService implements IStudentQueryService {
   constructor(
@@ -169,7 +183,12 @@ export class StudentsQueryService implements IStudentQueryService {
   }
 
   // Get student attendance stats info based on its id.
-  async getStudentsAttendanceStat(id: string) {
+  async getStudentsAttendanceStat(id: string): Promise<{
+    totalAttendances: number;
+    totalHoursSpent: number;
+    currentWeekAttendances: number;
+    currentWeekTotalHours: number;
+  }> {
     try {
       // Check if the student with the id exists
       await this.getSingleStudent(id);
@@ -183,26 +202,47 @@ export class StudentsQueryService implements IStudentQueryService {
         .addSelect('SUM(attendance.totalTimeSpent)', 'totalHoursSpent')
         .groupBy('student.id')
         .getRawOne();
-
       // Extract the necessary data from the result.
       const { student, totalAttendances, totalHoursSpent } = result;
 
-      // Get the number of weeks and months for calculation
+      // Calculate current week attendances and current week total hours spent
+      // Get the current date
       const currentDate = new Date();
-      const currentWeek = Math.ceil(currentDate.getDate() / 7);
-      const currentMonth = currentDate.getMonth() + 1; // Month is zero-based, so add 1
 
-      // Calculate average per week
-      const averagePerWeek = totalHoursSpent / currentWeek;
+      // Calculate the start date of the current week (Monday)
+      const currentWeekStartDate = new Date(currentDate);
+      currentWeekStartDate.setDate(
+        currentDate.getDate() - ((currentDate.getDay() + 6) % 7),
+      ); // Set to Monday
+      currentWeekStartDate.setHours(0, 0, 0, 0);
 
-      // Calculate average per month
-      const averagePerMonth = totalHoursSpent / currentMonth;
+      // Calculate the end date of the current week (today)
+      const currentWeekEndDate = new Date(currentDate);
+      currentWeekEndDate.setHours(23, 59, 59, 999);
 
+      // Query the student including all attendance records and calculate total attendances for the current week
+      const weekReport = await this.studentRepository
+        .createQueryBuilder('student')
+        .leftJoin('student.attendances', 'attendance')
+        .where('student.id = :id', { id: id })
+        .andWhere('attendance.checkInTime >= :startDate', {
+          startDate: currentWeekStartDate,
+        })
+        .andWhere('attendance.checkInTime <= :endDate', {
+          endDate: currentWeekEndDate,
+        })
+        .select('COUNT(attendance.id)', 'currentWeekAttendances')
+        .addSelect('SUM(attendance.totalTimeSpent)', 'currentWeekTotalHours')
+        .getRawOne();
+      // Extract the necessary data from the result
+      const { currentWeekAttendances, currentWeekTotalHours } = weekReport;
+
+      // TODO: Calculate avarage hours per week for the last 4 weeks.
       return {
         totalAttendances,
         totalHoursSpent,
-        averagePerWeek,
-        averagePerMonth,
+        currentWeekAttendances,
+        currentWeekTotalHours,
       };
     } catch (error) {
       if (

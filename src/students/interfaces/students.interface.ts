@@ -17,7 +17,12 @@ export interface IStudentQueryService {
     studentsPerProgram: { program: string; count: number }[];
     perProgramPercent: { program: string; percent: number }[];
   }>;
-  getStudentsAttendanceStat(id: string);
+  getStudentsAttendanceStat(id: string): Promise<{
+    totalAttendances: number;
+    totalHoursSpent: number;
+    currentWeekAttendances: number;
+    currentWeekTotalHours: number;
+  }>;
 }
 
 // Define an interface for students command service
