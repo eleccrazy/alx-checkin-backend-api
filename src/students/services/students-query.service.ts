@@ -240,9 +240,11 @@ export class StudentsQueryService implements IStudentQueryService {
       // TODO: Calculate avarage hours per week for the last 4 weeks.
       return {
         totalAttendances,
-        totalHoursSpent,
+        totalHoursSpent: totalHoursSpent ? totalHoursSpent : '0',
         currentWeekAttendances,
-        currentWeekTotalHours,
+        currentWeekTotalHours: currentWeekTotalHours
+          ? currentWeekTotalHours
+          : '0',
       };
     } catch (error) {
       if (
