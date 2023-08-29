@@ -12,7 +12,6 @@ export class GetStudentsStatsHandler
     try {
       return await this.studentsQueryService.getStudentsStats();
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

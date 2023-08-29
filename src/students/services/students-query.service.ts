@@ -66,6 +66,7 @@ export class StudentsQueryService implements IStudentQueryService {
       const allGuests = await this.studentRepository
         .createQueryBuilder('student')
         .where('student.isAlumni = :isAlumni', { isAlumni: true })
+        .orderBy('student.attendanceId', 'ASC')
         .getMany();
       return allGuests;
     } catch (error) {
@@ -80,6 +81,7 @@ export class StudentsQueryService implements IStudentQueryService {
       const allLearners = await this.studentRepository
         .createQueryBuilder('student')
         .where('student.isAlumni = :isAlumni', { isAlumni: false })
+        .orderBy('student.attendanceId', 'ASC')
         .getMany();
       return allLearners;
     } catch (error) {
@@ -116,7 +118,7 @@ export class StudentsQueryService implements IStudentQueryService {
     }
   }
 
-  // Get total number of students, guests, and students per program.
+  // Get total number of students, guests, students per program, and students per program percentage.
   async getStudentsStats(): Promise<{
     totalStudents: number;
     totalGuests: number;
@@ -162,7 +164,53 @@ export class StudentsQueryService implements IStudentQueryService {
         perProgramPercent,
       };
     } catch (error) {
-      console.log(error);
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
+
+  // Get student attendance stats info based on its id.
+  async getStudentsAttendanceStat(id: string) {
+    try {
+      // Check if the student with the id exists
+      await this.getSingleStudent(id);
+      // Query the student including all attendance records and calculate total attendances and total hours spent
+      const result = await this.studentRepository
+        .createQueryBuilder('student')
+        .leftJoinAndSelect('student.attendances', 'attendance')
+        .where('student.id = :id', { id: id })
+        .select('student', 'student')
+        .addSelect('COUNT(attendance.id)', 'totalAttendances')
+        .addSelect('SUM(attendance.totalTimeSpent)', 'totalHoursSpent')
+        .groupBy('student.id')
+        .getRawOne();
+
+      // Extract the necessary data from the result.
+      const { student, totalAttendances, totalHoursSpent } = result;
+
+      // Get the number of weeks and months for calculation
+      const currentDate = new Date();
+      const currentWeek = Math.ceil(currentDate.getDate() / 7);
+      const currentMonth = currentDate.getMonth() + 1; // Month is zero-based, so add 1
+
+      // Calculate average per week
+      const averagePerWeek = totalHoursSpent / currentWeek;
+
+      // Calculate average per month
+      const averagePerMonth = totalHoursSpent / currentMonth;
+
+      return {
+        totalAttendances,
+        totalHoursSpent,
+        averagePerWeek,
+        averagePerMonth,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
       throw new InternalServerErrorException(SERVER_ERROR);
     }
   }

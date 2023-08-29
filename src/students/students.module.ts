@@ -17,6 +17,7 @@ import { GetLearnersHandler } from './queries/handlers/get-learners.handler';
 import { GetGuestsHandler } from './queries/handlers/get-guests.handler';
 import { GetStudentQRCodeHandler } from './queries/handlers/get-student-qrcode.handler';
 import { GetStudentsStatsHandler } from './queries/handlers/get-students-stats.handler';
+import { GetStudentAttendanceStatsHandler } from './queries/handlers/get-student-attendance-stats.handler';
 import { RegisterStudentHandler } from './commands/handlers/register-student.handler';
 import { UpdateStudentHandler } from './commands/handlers/update-student.handler';
 import { DeleteStudentHandler } from './commands/handlers/delete-student.handler';
@@ -51,6 +52,7 @@ import { HubsModule } from 'src/hubs/hubs.module';
     ChangeProgramCohortHandler,
     GetStudentQRCodeHandler,
     GetStudentsStatsHandler,
+    GetStudentAttendanceStatsHandler,
   ],
   controllers: [StudentsController],
 })

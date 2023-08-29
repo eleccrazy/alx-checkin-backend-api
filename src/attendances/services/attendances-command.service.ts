@@ -106,7 +106,7 @@ export class AttendancesCommandService implements IAttendancesCommandService {
       // Update the attendance object with the week days.
       attendance.day = checkInTime.toLocaleString('en-US', { weekday: 'long' });
       // Update the attendance object with month and year
-      attendance.month = checkInTime.getMonth();
+      attendance.month = checkInTime.getMonth() + 1;
       attendance.year = checkInTime.getFullYear();
       const updatedAttendance = await this.attendanceRepository.save(
         attendance,

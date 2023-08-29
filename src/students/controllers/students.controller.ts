@@ -29,6 +29,7 @@ import { GetLearnersQuery } from '../queries/implementation/get-learners.query';
 import { GetGuestsQuery } from '../queries/implementation/get-guests.query';
 import { GetStudentQRCodeQuery } from '../queries/implementation/get-student-qrcode.query';
 import { GetStudentsStatsQuery } from '../queries/implementation/get-student-stats.query';
+import { GetStudentAttendanceStatsQuery } from '../queries/implementation/get-student-attendance-stats.query';
 
 @ApiTags('Documentation for students route')
 @Controller('students')
@@ -151,9 +152,21 @@ export class StudentsController {
   }
 
   // Handle Get request for retrieving students qr code
-  @ApiOperation({ summary: 'Get QR code of a student' })
+  @ApiOperation({
+    summary:
+      'Get QR code path of a student. Usefull for uploaded remote image path using cdn like coudinary',
+  })
   @Get(':id/qr-code')
   async getStudentQRCode(@Param('id') id: string) {
     return await this.queryBus.execute(new GetStudentQRCodeQuery(id));
+  }
+
+  // Handle Get request for retrieving attendance status of a student.
+  @ApiOperation({
+    summary: 'Get attendance stats of a specific student',
+  })
+  @Get(':id/attendance-stats')
+  async getStudentAttendanceStats(@Param('id') id: string) {
+    return await this.queryBus.execute(new GetStudentAttendanceStatsQuery(id));
   }
 }

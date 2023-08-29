@@ -10,6 +10,14 @@ export interface IStudentQueryService {
   getAllGuests(): Promise<StudentEntity[]>;
   getAllLearners(): Promise<StudentEntity[]>;
   getStudentQRCode(id: string): Promise<{ path: string }>;
+  getStudentsStats(): Promise<{
+    totalStudents: number;
+    totalGuests: number;
+    totalLearners: number;
+    studentsPerProgram: { program: string; count: number }[];
+    perProgramPercent: { program: string; percent: number }[];
+  }>;
+  getStudentsAttendanceStat(id: string);
 }
 
 // Define an interface for students command service
