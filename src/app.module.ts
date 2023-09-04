@@ -10,6 +10,7 @@ import { CohortsModule } from './cohorts/cohorts.module';
 import { AttendancesModule } from './attendances/attendances.module';
 import { AdminsModule } from './admins/admins.module';
 import { DatabaseModule } from './database/database.module';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DatabaseModule } from './database/database.module';
     CohortsModule,
     AttendancesModule,
     AdminsModule,
+    SettingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
