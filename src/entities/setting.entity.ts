@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class EmailSettings {
+export class SettingEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,4 +22,7 @@ export class EmailSettings {
 
   @Column()
   content: string;
+
+  @Column({ default: 0 })
+  timeLimit: number;
 }

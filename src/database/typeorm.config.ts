@@ -6,6 +6,7 @@ import { StudentEntity } from 'src/entities/students.entity';
 import { CohortEntity } from 'src/entities/cohorts.entity';
 import { HubEntity } from 'src/entities/hubs.entity';
 import { AttendanceEntity } from 'src/entities/attendances.entity';
+import { SettingEntity } from 'src/entities/setting.entity';
 
 export const typeOrmConfig = async (
   configService: ConfigService,
@@ -25,6 +26,7 @@ export const typeOrmConfig = async (
       CohortEntity,
       AttendanceEntity,
       StudentEntity,
+      SettingEntity,
     ],
   };
 };
