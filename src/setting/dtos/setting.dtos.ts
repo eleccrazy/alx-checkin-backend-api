@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsEmail,
   IsNotEmpty,
+  IsPositive,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -32,6 +33,7 @@ export class CreatSettingDto {
   @IsOptional()
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   timeLimit: number;
 }
 
@@ -60,5 +62,6 @@ export class UpdateSettingDto {
   @IsOptional()
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   timeLimit: number;
 }
