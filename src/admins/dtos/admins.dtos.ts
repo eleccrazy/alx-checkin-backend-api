@@ -41,6 +41,11 @@ export class RegisterAdminDto {
   @IsOptional()
   @ApiProperty()
   role: Role;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  hubId: string;
 }
 
 // This DTO is used to update an admin's details

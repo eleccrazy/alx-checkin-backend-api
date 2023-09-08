@@ -7,5 +7,6 @@ export class CreateAdminCommand {
     public readonly password: string,
     public readonly role: Role,
     public readonly confirmPassword: string,
+    public readonly hubId?: string,
   ) {}
 }

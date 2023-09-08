@@ -57,6 +57,7 @@ export interface CreateAdminInterface {
   email: string;
   password: string;
   role?: Role;
+  hubId?: string;
 }
 
 // Interface for typing the update admin object (payload)

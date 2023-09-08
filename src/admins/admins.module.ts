@@ -11,6 +11,7 @@ import { AdminsController } from './controllers/admins.controller';
 import { AdminAuthService } from './services/auth/admin-auth.service';
 import { AdminCommandService } from './services/admin-command.service';
 import { AdminQueryService } from './services/admin-query.service';
+import { HubsModule } from 'src/hubs/hubs.module';
 
 // Import all handler classes associated with admins
 import { CreateAdminHandler } from './commands/handlers/create-admin.handler';
@@ -26,6 +27,7 @@ import { LoginCommandHandler } from './commands/handlers/login-admin.handler';
   imports: [
     TypeOrmModule.forFeature([AdminEntity]),
     CqrsModule,
+    HubsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [

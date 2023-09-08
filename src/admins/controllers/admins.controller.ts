@@ -50,6 +50,7 @@ export class AdminsController {
       payload.password,
       payload.role,
       payload.confirmPassword,
+      payload.hubId,
     );
     const result = await this.commandBus.execute(command);
     return result;

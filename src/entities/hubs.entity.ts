@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { StudentEntity } from './students.entity';
 import { AttendanceEntity } from './attendances.entity';
+import { AdminEntity } from './admins.entity';
 
 // Define an entity for hubs table
 @Entity('hubs')
@@ -28,4 +29,7 @@ export class HubEntity {
 
   @OneToMany(() => AttendanceEntity, (attendance) => attendance.hub)
   attendances: AttendanceEntity[];
+
+  @OneToMany(() => AdminEntity, (admin) => admin.hub)
+  admins: AdminEntity[];
 }

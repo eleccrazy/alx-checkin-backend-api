@@ -16,6 +16,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { AdminQueryService } from '../admin-query.service';
+import { HubsQueryService } from 'src/hubs/services/hubs-query.service';
 
 // Define message for common not found errors
 const INVALID_CREDENTIALS = 'Invalid Credentials';
@@ -27,6 +28,7 @@ export class AdminAuthService implements IAdminAuthService {
     private adminRepository: Repository<AdminEntity>,
     private readonly configService: ConfigService,
     private readonly adminQueryService: AdminQueryService,
+    private readonly hubService: HubsQueryService,
   ) {}
   async signUpAdmin(
     payload: CreateAdminInterface,
@@ -57,6 +59,12 @@ export class AdminAuthService implements IAdminAuthService {
       admin.role = payload.role;
       admin.email = payload.email;
       admin.password = passwordDigest;
+      // Check if hub exists and update the admin if the role of the admin is attendant
+      if (payload.hubId && payload.role === 'attendant') {
+        const hub = await this.hubService.getSingleHub(payload.hubId);
+        // update admin
+        admin.hub = hub;
+      }
 
       const newAdmin = await this.adminRepository.save(admin);
       // Create a token.

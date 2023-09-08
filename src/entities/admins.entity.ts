@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { HubEntity } from './hubs.entity';
 
 // Custom enum for roles
 export enum Role {
@@ -32,4 +33,7 @@ export class AdminEntity {
 
   @Column({ type: 'enum', enum: Role, default: Role.Attendant })
   role: Role;
+
+  @ManyToOne(() => HubEntity, (hub) => hub.attendances, { nullable: true })
+  hub: HubEntity;
 }
