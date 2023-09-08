@@ -21,7 +21,7 @@ export class AdminQueryService implements IAdminQueryService {
   // Get all admins
   async getAdmins(): Promise<AdminEntity[]> {
     try {
-      const admins = await this.adminRepository.find();
+      const admins = await this.adminRepository.find({ relations: ['hub'] });
       return admins;
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong!');

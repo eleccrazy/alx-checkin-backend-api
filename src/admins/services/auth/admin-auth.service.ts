@@ -97,7 +97,10 @@ export class AdminAuthService implements IAdminAuthService {
   }): Promise<AdminResponseWithTokenType> {
     try {
       // Check if the admin exists
-      const admin = await this.adminRepository.findOneBy({ email: data.email });
+      const admin = await this.adminRepository.findOne({
+        where: { email: data.email },
+        relations: ['hub'],
+      });
       if (!admin) {
         throw new BadRequestException(INVALID_CREDENTIALS);
       }
