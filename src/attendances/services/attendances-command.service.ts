@@ -41,6 +41,12 @@ export class AttendancesCommandService implements IAttendancesCommandService {
       // Update the fileds of the attendance object
       attendance.student = student;
       attendance.checkInTime = new Date();
+      // Check if we have hubId
+      if (hubId) {
+        // Check if hub exists
+        const hub = await this.hubService.getSingleHub(hubId);
+        attendance.hub = hub;
+      }
       // Save the changes
       const newAttendance = await this.attendanceRepository.save(attendance);
       // Change the attendanceId field of the student to the id of the attendance being created
