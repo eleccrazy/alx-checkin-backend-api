@@ -50,4 +50,29 @@ export class AttendancesQueryService implements IAttendancesQueryService {
       throw new InternalServerErrorException('Something went wrong!');
     }
   }
+
+  // Get active attendances
+  async getActiveAttendances(): Promise<any> {
+    try {
+      const attendances = await this.attendanceRepository
+        .createQueryBuilder('attendance')
+        .leftJoinAndSelect('attendance.hub', 'hub')
+        .where('attendance.checkOutTime IS NULL')
+        .getMany();
+      const hubs = attendances.map((attendance) => attendance.hub.name);
+      const hubsSet = new Set(hubs);
+      const hubsArray = [...hubsSet];
+      const activeAttendances = {};
+      hubsArray.forEach((hub) => {
+        activeAttendances[hub] = 0;
+      });
+      attendances.forEach((attendance) => {
+        activeAttendances[attendance.hub.name] += 1;
+      });
+      return activeAttendances;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
 }

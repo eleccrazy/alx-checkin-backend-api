@@ -16,6 +16,7 @@ import { GetSingleAttendanceHandler } from './queries/handlers/get-single-attend
 import { CreateAttendanceHandler } from './commands/handlers/create-attendance.handler';
 import { DeleteAttendanceHandler } from './commands/handlers/delete-attendance.handler';
 import { CheckoutAttendanceHandler } from './commands/handlers/checkout-attendance.handler';
+import { GetActiveAttendancesHandler } from './queries/handlers/get-active-attendances.handler';
 
 // Import additional dependencies
 import { HubsModule } from 'src/hubs/hubs.module';
@@ -37,6 +38,7 @@ import { StudentsModule } from 'src/students/students.module';
     CreateAttendanceHandler,
     DeleteAttendanceHandler,
     CheckoutAttendanceHandler,
+    GetActiveAttendancesHandler,
   ],
 })
 export class AttendancesModule {}

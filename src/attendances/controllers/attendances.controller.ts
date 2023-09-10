@@ -15,6 +15,7 @@ import { GetSingleAttendanceQuery } from '../queries/implementation/get-single-a
 import { CreateAttendanceCommand } from '../commands/implementation/create-attendance.command';
 import { DeleteAttendanceCommand } from '../commands/implementation/delete-attendance.command';
 import { CheckoutAttendanceCommand } from '../commands/implementation/checkout-attendance.command';
+import { GetActiveAttendancesQuery } from '../queries/implementation/get-active-attendances.query';
 
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
@@ -50,6 +51,15 @@ export class AttendancesController {
     return await this.commandBus.execute(command);
   }
 
+  // Get active attendances for a specific hub
+  @Get('/active')
+  @ApiOperation({
+    summary: 'Get number of active attendances in a specific hub',
+  })
+  async getActiveAttendances() {
+    return await this.queryBus.execute(new GetActiveAttendancesQuery());
+  }
+
   // Get a single attendance
   @Get(':id')
   @ApiOperation({ summary: 'Get a single attendance.' })
@@ -71,7 +81,7 @@ export class AttendancesController {
 
   // Delete an attendance
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete an attendance record. Uually not done' })
+  @ApiOperation({ summary: 'Delete an attendance record. Usually not done' })
   async deleteAttendance(@Param('id') id: string) {
     const command = new DeleteAttendanceCommand(id);
     return await this.commandBus.execute(command);
