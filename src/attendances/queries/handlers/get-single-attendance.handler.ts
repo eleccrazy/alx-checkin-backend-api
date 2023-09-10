@@ -9,7 +9,7 @@ export class GetSingleAttendanceHandler
   constructor(private readonly attendanceQuery: AttendancesQueryService) {}
   async execute(query: any): Promise<any> {
     try {
-      return { message: 'From get single attendance query handler' };
+      return await this.attendanceQuery.getSingleAttendance(query.id);
     } catch (error) {
       throw error;
     }

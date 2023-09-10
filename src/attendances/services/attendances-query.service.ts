@@ -28,7 +28,10 @@ export class AttendancesQueryService implements IAttendancesQueryService {
 
   async getSingleAttendance(id: string): Promise<AttendanceEntity> {
     try {
-      const attendace = await this.attendanceRepository.findOneBy({ id: id });
+      const attendace = await this.attendanceRepository.findOne({
+        where: { id: id },
+        relations: ['hub'],
+      });
       if (!attendace) {
         throw new NotFoundException('Attendance not found');
       }
