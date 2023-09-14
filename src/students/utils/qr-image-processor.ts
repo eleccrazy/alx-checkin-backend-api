@@ -27,7 +27,7 @@ export class QRImageProcesser {
       if (!fs.existsSync(completePath)) {
         return { error: 'Could not find associated qr code.' };
       }
-      return { localPath: `${studentId}.png`, remotePath: 'fakepath' };
+      return { path: completePath };
     } catch (error) {
       return { error: 'Could not get qr image path' };
     }

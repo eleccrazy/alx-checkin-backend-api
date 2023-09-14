@@ -62,6 +62,9 @@ export class StudentEntity {
   @Column({ nullable: true })
   qrRemotePath: string;
 
+  @Column({ default: false })
+  isEmailSent: boolean;
+
   @ManyToOne(() => ProgramEntity, (program) => program.students)
   program: ProgramEntity;
 

@@ -15,6 +15,7 @@ import { SettingEntity } from 'src/entities/setting.entity';
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([SettingEntity])],
+  exports: [SettingQueryService],
   controllers: [SettingController],
   providers: [
     SettingQueryService,

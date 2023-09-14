@@ -15,6 +15,12 @@ export class SettingEntity {
   @Column()
   sourceEmail: string;
 
+  @Column({ nullable: true })
+  host: string;
+
+  @Column({ nullable: true })
+  port: number;
+
   @Column()
   password: string;
 

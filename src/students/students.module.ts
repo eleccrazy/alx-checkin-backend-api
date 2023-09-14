@@ -9,6 +9,7 @@ import { StudentsController } from './controllers/students.controller';
 // Import all service classes associated with student
 import { StudentsCommandService } from './services/students-command.service';
 import { StudentsQueryService } from './services/students-query.service';
+import { StudentMailService } from './services/student-mail.service';
 
 // Import all handler classes associated with student
 import { GetStudentsHandler } from './queries/handlers/get-students.handler';
@@ -23,11 +24,14 @@ import { UpdateStudentHandler } from './commands/handlers/update-student.handler
 import { DeleteStudentHandler } from './commands/handlers/delete-student.handler';
 import { PromoteStudentHandler } from './commands/handlers/promote-student.handler';
 import { ChangeProgramCohortHandler } from './commands/handlers/change-program-cohort.handler';
+import { SendSingleMailHandler } from './commands/handlers/send-single-mail.handler';
+import { SendMassMailHandler } from './commands/handlers/send-mass-mail.handler';
 
 // Import additional dependencies
 import { ProgramsModule } from 'src/programs/programs.module';
 import { CohortsModule } from 'src/cohorts/cohorts.module';
 import { HubsModule } from 'src/hubs/hubs.module';
+import { SettingModule } from 'src/setting/setting.module';
 
 @Module({
   imports: [
@@ -36,6 +40,7 @@ import { HubsModule } from 'src/hubs/hubs.module';
     ProgramsModule,
     CohortsModule,
     HubsModule,
+    SettingModule,
   ],
   exports: [StudentsQueryService, StudentsCommandService],
   providers: [
@@ -53,6 +58,9 @@ import { HubsModule } from 'src/hubs/hubs.module';
     GetStudentQRCodeHandler,
     GetStudentsStatsHandler,
     GetStudentAttendanceStatsHandler,
+    SendSingleMailHandler,
+    SendMassMailHandler,
+    StudentMailService,
   ],
   controllers: [StudentsController],
 })

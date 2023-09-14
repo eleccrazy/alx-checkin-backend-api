@@ -14,6 +14,8 @@ export interface SettingCreateInterface {
   password?: string;
   subject?: string;
   content?: string;
+  host?: string;
+  port?: number;
   timeLimit?: number;
 }
 
@@ -23,6 +25,8 @@ export interface SettingUpdateInterface {
   password?: string;
   subject?: string;
   content?: string;
+  host?: string;
+  port?: number;
   timeLimit?: number;
 }
 
@@ -31,7 +35,10 @@ export interface SettingResponse {
   sourceEmail: string;
   subject: string;
   content: string;
+  host: string;
+  port: number;
   timeLimit: number;
+  password: string;
   createdAt: Date;
   updatedAt: Date;
 }

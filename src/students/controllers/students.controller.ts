@@ -30,6 +30,8 @@ import { GetGuestsQuery } from '../queries/implementation/get-guests.query';
 import { GetStudentQRCodeQuery } from '../queries/implementation/get-student-qrcode.query';
 import { GetStudentsStatsQuery } from '../queries/implementation/get-student-stats.query';
 import { GetStudentAttendanceStatsQuery } from '../queries/implementation/get-student-attendance-stats.query';
+import { SendSingleMailCommand } from '../commands/implementation/send-single-mail.command';
+import { SendMassMailCommand } from '../commands/implementation/send-mass-mail.command';
 
 @ApiTags('Documentation for students route')
 @Controller('students')
@@ -85,6 +87,14 @@ export class StudentsController {
   async getStudentsStats() {
     return await this.queryBus.execute(new GetStudentsStatsQuery());
   }
+
+  // Handle post request for /students/mass-mail
+  @ApiOperation({ summary: 'Send mass mail to all students' })
+  @Post('mass-mail')
+  async massMail() {
+    return await this.commandBus.execute(new SendMassMailCommand());
+  }
+
   // Handle get request for /students/:id
   @ApiOperation({ summary: 'Get a single student' })
   @Get(':id')
@@ -112,6 +122,13 @@ export class StudentsController {
       payload.city,
     );
     return await this.commandBus.execute(command);
+  }
+
+  // Handle post request for /students/:id/mail route
+  @ApiOperation({ summary: 'Send mail to a student' })
+  @Post(':id/mail')
+  async sendMail(@Param('id') id: string) {
+    return await this.commandBus.execute(new SendSingleMailCommand(id));
   }
 
   // Handle Patch request for /students/:id/change-program-cohort

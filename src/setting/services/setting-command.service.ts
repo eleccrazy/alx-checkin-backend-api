@@ -38,6 +38,8 @@ export class SettingCommandService implements ISettingCommandService {
       settingEntity.password = setting.password;
       settingEntity.subject = setting.subject;
       settingEntity.content = setting.content;
+      settingEntity.host = setting.host;
+      settingEntity.port = setting.port;
       settingEntity.timeLimit = setting.timeLimit;
       return await this.settingRepository.save(settingEntity);
     } catch (error) {
@@ -88,6 +90,22 @@ export class SettingCommandService implements ISettingCommandService {
         // Check if the content is different
         if (payload.content !== existingSetting.content) {
           existingSetting.content = payload.content;
+          isSomethingUpdated = true;
+        }
+      }
+      // Check if we have host
+      if (payload.host) {
+        // Check if host is different
+        if (payload.host !== existingSetting.host) {
+          existingSetting.host = payload.host;
+          isSomethingUpdated = true;
+        }
+      }
+      // Check if we have port
+      if (payload.port) {
+        // Check if port is different
+        if (payload.port !== existingSetting.port) {
+          existingSetting.port = payload.port;
           isSomethingUpdated = true;
         }
       }

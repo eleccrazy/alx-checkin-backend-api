@@ -39,6 +39,8 @@ export class SettingController {
       payload.password,
       payload.subject,
       payload.content,
+      payload.host,
+      payload.port,
       payload.timeLimit,
     );
     return await this.commandBus.execute(command);
@@ -58,6 +60,8 @@ export class SettingController {
       payload.password,
       payload.subject,
       payload.content,
+      payload.host,
+      payload.port,
       payload.timeLimit,
     );
     return await this.commandBus.execute(command);

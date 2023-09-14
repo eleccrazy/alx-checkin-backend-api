@@ -40,6 +40,12 @@ export interface IStudentCommandService {
   deleteStudent(id: string): Promise<{ message: string }>;
 }
 
+// Define an interface for students mail service
+export interface IStudentMailService {
+  sendSingleMail(id: string): Promise<{ message: string }>;
+  sendMassMail(): Promise<{ message: string }>;
+}
+
 // Custom interface for registering a student
 export interface RegisterStudentInterface {
   firstName: string;

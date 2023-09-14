@@ -32,6 +32,17 @@ export class CreatSettingDto {
 
   @IsOptional()
   @ApiProperty()
+  @IsString()
+  host: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  port: number;
+
+  @IsOptional()
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   timeLimit: number;
@@ -58,6 +69,17 @@ export class UpdateSettingDto {
   @ApiProperty()
   @IsString()
   content: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @IsString()
+  host: string;
+
+  @IsOptional()
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  port: number;
 
   @IsOptional()
   @ApiProperty()
