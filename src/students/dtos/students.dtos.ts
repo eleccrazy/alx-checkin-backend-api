@@ -130,3 +130,22 @@ export class ChangeProgramCohortDto {
   @ApiProperty()
   cohortId: string;
 }
+
+// Dto for excel file upload
+
+export class ExcelFileUploadDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  programId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  cohortId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  isAlumni: string;
+}

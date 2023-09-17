@@ -5,6 +5,7 @@ import {
   RegisterStudentInterface,
   UpdateStudentInterface,
   ChangeProgramCohortInteface,
+  ExcelRegisterData,
 } from '../interfaces/students.interface';
 import { Repository, QueryFailedError } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,11 +15,15 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 
+import { excelProcessor } from '../utils/excel-processor';
 import { QRImageProcesser } from '../utils/qr-image-processor';
 import { StudentsQueryService } from './students-query.service';
+import updateRegistrationStatus from '../utils/pdf_generator/generate-pdf-report-for-registration';
 import { HubsQueryService } from 'src/hubs/services/hubs-query.service';
 import { ProgramsQueryService } from 'src/programs/services/programs-query.service';
 import { CohortsQueryService } from 'src/cohorts/services/cohorts-query.service';
+import { ProgramEntity } from 'src/entities/programs.entity';
+import { CohortEntity } from 'src/entities/cohorts.entity';
 
 // Define constant error messages
 const NOT_FOUND = 'Student not found';
@@ -376,6 +381,97 @@ export class StudentsCommandService implements IStudentCommandService {
         throw new BadRequestException(
           'Student has child entities, cannot be deleted!',
         );
+      }
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
+
+  async excelRegsterStudent(
+    student: ExcelRegisterData,
+    program: ProgramEntity,
+    cohort: CohortEntity,
+    isAlumni: boolean,
+  ) {
+    const { firstName, lastName, gender, email, phone } = student;
+    // Check if student with the same email exists
+    const existingStudent = await this.studentRepository.findOne({
+      where: { email: email },
+    });
+    if (existingStudent) {
+      return 'Email exists';
+    }
+
+    // Check if student with the same phone exists
+    const existingPhone = await this.studentRepository.findOne({
+      where: { phone: phone },
+    });
+    if (existingPhone) {
+      return 'Phone number exists';
+    }
+    // Check the gender is a valid gender
+    if (!['Male', 'Female', 'Other'].includes(gender)) {
+      return 'Students gender must be one of the following: Male, Female, Other';
+    }
+
+    // Register a student
+    const newStudent = new StudentEntity();
+    newStudent.firstName = firstName;
+    newStudent.lastName = lastName;
+    newStudent.email = email;
+    newStudent.phone = phone;
+    newStudent.isAlumni = isAlumni;
+    newStudent.program = program;
+    newStudent.cohort = cohort;
+    newStudent.gender = gender;
+    await this.studentRepository.save(newStudent);
+
+    // Create a QR Code.
+    const localPath = await qrImageProcesser.generateQRCode(newStudent.id);
+    if (typeof localPath === 'string') {
+      await this.deleteStudent(newStudent.id);
+      return 'Couldnt create a qr code for the student.';
+    }
+    // Update the student with the path
+    await this.studentRepository.save(newStudent);
+    return 'Success';
+  }
+
+  async registerStudentsFromExcel(
+    filePath: string,
+    program: ProgramEntity,
+    cohort: CohortEntity,
+    isAlumni: string,
+  ): Promise<any> {
+    try {
+      // Validate the excel file.
+      const result = excelProcessor(filePath);
+      // Check if the result is an array
+      if (!Array.isArray(result)) {
+        throw new BadRequestException('Invalid Excel file');
+      }
+      // Register each student and get the registration status
+      const registrationStatuses: string[] = [];
+      const isAlumn = isAlumni === 'yes' ? true : false;
+      // Iterate over the result and register each student.
+      for (const student of result) {
+        const status = await this.excelRegsterStudent(
+          student,
+          program,
+          cohort,
+          isAlumn,
+        );
+        registrationStatuses.push(status);
+      }
+      // Update the registration status in the Excel report
+      const filename = await updateRegistrationStatus(
+        filePath,
+        result,
+        registrationStatuses,
+      );
+      return await { report: filename };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
       }
       throw new InternalServerErrorException(SERVER_ERROR);
     }

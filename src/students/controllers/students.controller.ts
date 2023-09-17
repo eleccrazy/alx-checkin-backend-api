@@ -6,16 +6,24 @@ import {
   Delete,
   Param,
   Body,
+  ParseFilePipe,
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  UsePipes,
+  ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import {
   RegisterStudentDto,
   UpdateStudentDto,
   PromoteStudentDto,
   ChangeProgramCohortDto,
+  ExcelFileUploadDto,
 } from '../dtos/students.dtos';
 
 import { RegisterStudentCommand } from '../commands/implementation/register-student.command';
@@ -32,6 +40,9 @@ import { GetStudentsStatsQuery } from '../queries/implementation/get-student-sta
 import { GetStudentAttendanceStatsQuery } from '../queries/implementation/get-student-attendance-stats.query';
 import { SendSingleMailCommand } from '../commands/implementation/send-single-mail.command';
 import { SendMassMailCommand } from '../commands/implementation/send-mass-mail.command';
+import { RegisterStudentFromExcelCommand } from '../commands/implementation/register-students-from-excel.command';
+
+import { SaveExcelFilePipe } from '../pipes/file-save.pipe';
 
 @ApiTags('Documentation for students route')
 @Controller('students')
@@ -74,6 +85,23 @@ export class StudentsController {
       payload.hubId,
       payload.area,
       payload.city,
+      payload.isAlumni,
+    );
+    return await this.commandBus.execute(command);
+  }
+
+  // Handle post request for /students/excel for registering students from excel data.
+  @ApiOperation({ summary: 'Register students from excel data' })
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('excel')
+  async registerStudentsFromExcel(
+    @UploadedFile(new SaveExcelFilePipe()) filePath: string,
+    @Body() payload: ExcelFileUploadDto,
+  ) {
+    const command = new RegisterStudentFromExcelCommand(
+      filePath,
+      payload.programId,
+      payload.cohortId,
       payload.isAlumni,
     );
     return await this.commandBus.execute(command);

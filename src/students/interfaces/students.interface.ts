@@ -79,3 +79,12 @@ export interface ChangeProgramCohortInteface {
   programId?: string;
   cohortId?: string;
 }
+
+// Custom interface for registration student via excel
+export interface ExcelRegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  gender: Gender;
+}

@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as path from 'path';
 import * as express from 'express';
+import { MulterModule } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,10 @@ async function bootstrap() {
   app.use(
     '/api/v1/static/images/',
     express.static(path.join(__dirname, '../public/qrcodes/')),
+  );
+  app.use(
+    '/api/v1/static/reports',
+    express.static(path.join(__dirname, '../public/reports/registration/')),
   );
 
   const config = new DocumentBuilder()
