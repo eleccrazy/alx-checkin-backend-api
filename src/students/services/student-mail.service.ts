@@ -61,9 +61,8 @@ export class StudentMailService implements IStudentMailService {
         port,
       );
       // Update the student's mail status on success
-      /* student.isEmailSent = true;
-      await studentRepository.save(student);
-      */
+      student.isEmailSent = true;
+      await this.studentRepository.save(student);
       return { message: response.message };
     } catch (error) {
       if (
