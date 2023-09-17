@@ -27,6 +27,7 @@ import { ChangeProgramCohortHandler } from './commands/handlers/change-program-c
 import { SendSingleMailHandler } from './commands/handlers/send-single-mail.handler';
 import { SendMassMailHandler } from './commands/handlers/send-mass-mail.handler';
 import { RegisterStudentFromExcelHandler } from './commands/handlers/register-students-from-excel.handler';
+import { GetStudentAttendancesHandler } from './queries/handlers/get-student-attendances.handler';
 
 // Import additional dependencies
 import { ProgramsModule } from 'src/programs/programs.module';
@@ -63,6 +64,7 @@ import { SettingModule } from 'src/setting/setting.module';
     SendMassMailHandler,
     StudentMailService,
     RegisterStudentFromExcelHandler,
+    GetStudentAttendancesHandler,
   ],
   controllers: [StudentsController],
 })

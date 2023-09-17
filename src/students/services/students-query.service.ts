@@ -209,11 +209,11 @@ export class StudentsQueryService implements IStudentQueryService {
       // Get the current date
       const currentDate = new Date();
 
-      // Calculate the start date of the current week (Monday)
+      // Calculate the start date of the current week (Sunday)
       const currentWeekStartDate = new Date(currentDate);
       currentWeekStartDate.setDate(
-        currentDate.getDate() - ((currentDate.getDay() + 6) % 7),
-      ); // Set to Monday
+        currentDate.getDate() - currentDate.getDay(),
+      ); // Set to Sunday
       currentWeekStartDate.setHours(0, 0, 0, 0);
 
       // Calculate the end date of the current week (today)
@@ -246,6 +246,67 @@ export class StudentsQueryService implements IStudentQueryService {
           ? currentWeekTotalHours
           : '0',
       };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
+
+  // Get all attendances of a student
+  async getStudentAttendances(id: string) {
+    try {
+      // Check if the student with the id exists
+      await this.getSingleStudent(id);
+      // Get all attendances of a student
+      const student = await this.studentRepository.findOne({
+        where: { id: id },
+        relations: ['attendances'],
+      });
+      // Transform the attendances into the desired format
+      const attendanceData = student.attendances.map((attendance) => ({
+        checkIn: attendance.checkInTime,
+        Date: formatDate(attendance.checkInTime),
+        checkInTime: formatTime(attendance.checkInTime),
+        checkOutTime: formatTime(attendance.checkOutTime),
+        totalHoursSpent: formatTotalTimeSpent(attendance.totalTimeSpent),
+      }));
+
+      attendanceData.sort((a, b) => {
+        const dateA = new Date(a.checkIn).getTime();
+        const dateB = new Date(b.checkIn).getTime();
+        return dateB - dateA;
+      });
+
+      // Helper function to format date as dd/mm/yyyy
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+
+      // Helper function to format time as hh:mm:ss
+      function formatTime(timeString) {
+        const time = new Date(timeString);
+        const hours = String(time.getHours()).padStart(2, '0');
+        const minutes = String(time.getMinutes()).padStart(2, '0');
+        const seconds = String(time.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+      }
+
+      // Helper function to format total time spent as hours:minutes
+      function formatTotalTimeSpent(totalTimeSpent) {
+        const hours = Math.floor(totalTimeSpent);
+        const minutes = Math.round((totalTimeSpent % 1) * 60);
+        return `${hours}:${String(minutes).padStart(2, '0')}`;
+      }
+      return attendanceData;
     } catch (error) {
       if (
         error instanceof NotFoundException ||

@@ -6,7 +6,6 @@ import {
   Delete,
   Param,
   Body,
-  ParseFilePipe,
 } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -41,6 +40,7 @@ import { GetStudentAttendanceStatsQuery } from '../queries/implementation/get-st
 import { SendSingleMailCommand } from '../commands/implementation/send-single-mail.command';
 import { SendMassMailCommand } from '../commands/implementation/send-mass-mail.command';
 import { RegisterStudentFromExcelCommand } from '../commands/implementation/register-students-from-excel.command';
+import { GetStudentAttendancesQuery } from '../queries/implementation/get-student-attendances.query';
 
 import { SaveExcelFilePipe } from '../pipes/file-save.pipe';
 
@@ -213,5 +213,14 @@ export class StudentsController {
   @Get(':id/attendance-stats')
   async getStudentAttendanceStats(@Param('id') id: string) {
     return await this.queryBus.execute(new GetStudentAttendanceStatsQuery(id));
+  }
+
+  // Handle Get request for retrieving all attendance records of a student.
+  @ApiOperation({
+    summary: 'Get all attendances of a student in readable format.',
+  })
+  @Get(':id/attendances')
+  async getStudentAttendance(@Param('id') id: string) {
+    return await this.queryBus.execute(new GetStudentAttendancesQuery(id));
   }
 }
