@@ -258,7 +258,16 @@ export class StudentsQueryService implements IStudentQueryService {
   }
 
   // Get all attendances of a student
-  async getStudentAttendances(id: string) {
+  async getStudentAttendances(id: string): Promise<
+    {
+      id: string;
+      checkIn: Date;
+      date: string;
+      checkInTime: string;
+      checkOutTime: string;
+      totalHoursSpent: string;
+    }[]
+  > {
     try {
       // Check if the student with the id exists
       await this.getSingleStudent(id);
@@ -269,8 +278,9 @@ export class StudentsQueryService implements IStudentQueryService {
       });
       // Transform the attendances into the desired format
       const attendanceData = student.attendances.map((attendance) => ({
+        id: attendance.id,
         checkIn: attendance.checkInTime,
-        Date: formatDate(attendance.checkInTime),
+        date: formatDate(attendance.checkInTime),
         checkInTime: formatTime(attendance.checkInTime),
         checkOutTime: formatTime(attendance.checkOutTime),
         totalHoursSpent: formatTotalTimeSpent(attendance.totalTimeSpent),
