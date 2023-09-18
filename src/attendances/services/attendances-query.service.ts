@@ -71,7 +71,6 @@ export class AttendancesQueryService implements IAttendancesQueryService {
       });
       return activeAttendances;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException(SERVER_ERROR);
     }
   }

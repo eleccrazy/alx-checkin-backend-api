@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { IStudentQueryService } from '../interfaces/students.interface';
 import { StudentEntity } from 'src/entities/students.entity';
-import { Repository, QueryFailedError, In } from 'typeorm';
+import { Repository, QueryFailedError, IsNull, Not } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { QRImageProcesser } from '../utils/qr-image-processor';
@@ -282,8 +282,12 @@ export class StudentsQueryService implements IStudentQueryService {
         checkIn: attendance.checkInTime,
         date: formatDate(attendance.checkInTime),
         checkInTime: formatTime(attendance.checkInTime),
-        checkOutTime: formatTime(attendance.checkOutTime),
-        totalHoursSpent: formatTotalTimeSpent(attendance.totalTimeSpent),
+        checkOutTime: attendance.checkOutTime
+          ? formatTime(attendance.checkOutTime)
+          : 'unknown',
+        totalHoursSpent: attendance.totalTimeSpent
+          ? formatTotalTimeSpent(attendance.totalTimeSpent)
+          : 'unknown',
       }));
 
       attendanceData.sort((a, b) => {
@@ -317,6 +321,50 @@ export class StudentsQueryService implements IStudentQueryService {
         return `${hours}:${String(minutes).padStart(2, '0')}`;
       }
       return attendanceData;
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException(SERVER_ERROR);
+    }
+  }
+
+  async getActiveStudentsPerProgram(): Promise<{
+    studentsPerProgram: { program: string; count: number }[];
+    perProgramPercent: { program: string; percent: number }[];
+  }> {
+    try {
+      // Get total number of students
+      const totalStudentsWithAttendance = await this.studentRepository
+        .createQueryBuilder('student')
+        .select('COUNT(*)', 'count')
+        .where('student.attendanceId IS NOT NULL')
+        .getRawOne();
+      const totalStudents = totalStudentsWithAttendance.count;
+      // Get total number of active students per program
+      const studentsPerProgram = await this.studentRepository
+        .createQueryBuilder('student')
+        .select('program.name', 'program')
+        .addSelect('COUNT(*)', 'count')
+        .leftJoin('student.program', 'program')
+        .where('student.attendanceId IS NOT NULL')
+        .groupBy('program.name')
+        .getRawMany();
+
+      // Calculate the percentage of students per program by comparing the count with the total number of studens.
+      // Replace the count key with percent and calculate the percent value for each program
+      const perProgramPercent = studentsPerProgram
+        .map((prog) => {
+          const percentage = parseFloat(
+            ((prog.count / totalStudents) * 100).toFixed(2),
+          );
+          return { program: prog.program, percent: percentage };
+        })
+        .sort((a, b) => b.percent - a.percent);
+      return { studentsPerProgram, perProgramPercent };
     } catch (error) {
       if (
         error instanceof NotFoundException ||

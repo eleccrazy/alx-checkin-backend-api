@@ -41,6 +41,7 @@ import { SendSingleMailCommand } from '../commands/implementation/send-single-ma
 import { SendMassMailCommand } from '../commands/implementation/send-mass-mail.command';
 import { RegisterStudentFromExcelCommand } from '../commands/implementation/register-students-from-excel.command';
 import { GetStudentAttendancesQuery } from '../queries/implementation/get-student-attendances.query';
+import { GetActiveStudentQuery } from '../queries/implementation/get-active-students.query';
 
 import { SaveExcelFilePipe } from '../pipes/file-save.pipe';
 
@@ -114,6 +115,15 @@ export class StudentsController {
   @Get('stats')
   async getStudentsStats() {
     return await this.queryBus.execute(new GetStudentsStatsQuery());
+  }
+
+  // Handle Get request for retrieving percentage and total number of active students on hubs per program.
+  @ApiOperation({
+    summary: 'Get the perprogram active students stats (students in hubs)',
+  })
+  @Get('active-students')
+  async getActiveStudentStats() {
+    return await this.queryBus.execute(new GetActiveStudentQuery());
   }
 
   // Handle post request for /students/mass-mail
