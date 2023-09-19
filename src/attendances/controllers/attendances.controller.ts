@@ -16,6 +16,7 @@ import { CreateAttendanceCommand } from '../commands/implementation/create-atten
 import { DeleteAttendanceCommand } from '../commands/implementation/delete-attendance.command';
 import { CheckoutAttendanceCommand } from '../commands/implementation/checkout-attendance.command';
 import { GetActiveAttendancesQuery } from '../queries/implementation/get-active-attendances.query';
+import { CheckoutAllAttendancesCommand } from '../commands/implementation/checkout-all-attendances.command';
 
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
@@ -49,6 +50,13 @@ export class AttendancesController {
       payload.hubId,
     );
     return await this.commandBus.execute(command);
+  }
+
+  // Check out all attendances
+  @Post('/check-out')
+  @ApiOperation({ summary: 'Check out all active attendances.' })
+  async checkoutAllAttendance() {
+    return await this.commandBus.execute(new CheckoutAllAttendancesCommand());
   }
 
   // Get active attendances for a specific hub

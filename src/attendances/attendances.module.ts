@@ -17,10 +17,12 @@ import { CreateAttendanceHandler } from './commands/handlers/create-attendance.h
 import { DeleteAttendanceHandler } from './commands/handlers/delete-attendance.handler';
 import { CheckoutAttendanceHandler } from './commands/handlers/checkout-attendance.handler';
 import { GetActiveAttendancesHandler } from './queries/handlers/get-active-attendances.handler';
+import { CheckoutAllAttendancesHandler } from './commands/handlers/checkout-all-attendances.handler';
 
 // Import additional dependencies
 import { HubsModule } from 'src/hubs/hubs.module';
 import { StudentsModule } from 'src/students/students.module';
+import { SettingModule } from 'src/setting/setting.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { StudentsModule } from 'src/students/students.module';
     TypeOrmModule.forFeature([AttendanceEntity]),
     HubsModule,
     StudentsModule,
+    SettingModule,
   ],
   controllers: [AttendancesController],
   providers: [
@@ -39,6 +42,7 @@ import { StudentsModule } from 'src/students/students.module';
     DeleteAttendanceHandler,
     CheckoutAttendanceHandler,
     GetActiveAttendancesHandler,
+    CheckoutAllAttendancesHandler,
   ],
 })
 export class AttendancesModule {}
