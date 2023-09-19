@@ -22,7 +22,9 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   CheckoutAttendanceDto,
   CreateAttendanceDto,
+  CheckoutAllAttendanceDto,
 } from '../dtos/attendances.dtos';
+import { paymentsresellersubscription } from 'googleapis/build/src/apis/paymentsresellersubscription';
 
 @Controller('attendances')
 @ApiTags('Documentation for attendances route')
@@ -55,8 +57,10 @@ export class AttendancesController {
   // Check out all attendances
   @Post('/check-out')
   @ApiOperation({ summary: 'Check out all active attendances.' })
-  async checkoutAllAttendance() {
-    return await this.commandBus.execute(new CheckoutAllAttendancesCommand());
+  async checkoutAllAttendance(@Body() payload: CheckoutAllAttendanceDto) {
+    return await this.commandBus.execute(
+      new CheckoutAllAttendancesCommand(payload.hubId),
+    );
   }
 
   // Get active attendances for a specific hub

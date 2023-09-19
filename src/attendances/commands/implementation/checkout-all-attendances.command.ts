@@ -1,3 +1,3 @@
 export class CheckoutAllAttendancesCommand {
-  constructor() {}
+  constructor(public readonly hubId: string) {}
 }

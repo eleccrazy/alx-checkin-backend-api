@@ -19,3 +19,10 @@ export class CheckoutAttendanceDto {
   @ApiProperty()
   studentId: string;
 }
+
+export class CheckoutAllAttendanceDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  hubId: string;
+}

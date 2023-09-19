@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
 import { IAttendancesCommandService } from '../interfaces/attendances.interface';
 import { Repository, QueryFailedError } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -169,22 +169,28 @@ export class AttendancesCommandService implements IAttendancesCommandService {
     }
   }
 
-  async checkOutAllAttendances() {
+  async checkOutAllAttendances(hubId: string) {
     try {
+      // Check if the associated hub for admin exists
+      const hub = await this.hubService.getSingleHub(hubId);
       // Get all checked in attendances
       const attendances = await this.attendanceRepository
         .createQueryBuilder('attendance')
         .leftJoinAndSelect('attendance.student', 'student')
+        .leftJoinAndSelect('attendance.hub', 'hub')
         .where('attendance.checkOutTime IS NULL')
         .getMany();
-      // Filter attendanceId along with studentId from each attendance
-      const attendaceData = attendances.map((attendance) => {
+      // Filter attendanceId along with studentId from each attendance, check if the student is checke in from the same hub.
+      const filteredAttendanceData = attendances.filter(
+        (attendace) => hubId === attendace.hub.id,
+      );
+      const attendaceData = filteredAttendanceData.map((attendance) => {
         return { id: attendance.id, studentId: attendance.student.id };
       });
       // Check if there are no active attendance records in the database
       if (attendaceData.length === 0) {
         throw new BadRequestException(
-          'There are no students to be checked out.',
+          'There are no students to be checked out from your hub.',
         );
       }
       // Get the settings from the database.
