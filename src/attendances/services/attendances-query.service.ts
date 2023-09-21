@@ -54,6 +54,7 @@ export class AttendancesQueryService implements IAttendancesQueryService {
   // Get active attendances
   async getActiveAttendances(): Promise<any> {
     try {
+      // Get only active attendances
       const attendances = await this.attendanceRepository
         .createQueryBuilder('attendance')
         .leftJoinAndSelect('attendance.hub', 'hub')
@@ -69,7 +70,55 @@ export class AttendancesQueryService implements IAttendancesQueryService {
       attendances.forEach((attendance) => {
         activeAttendances[attendance.hub.name] += 1;
       });
-      return activeAttendances;
+      // Get today's all attendances.
+      const today = new Date();
+
+      // Set the start and end of today
+      const startOfToday = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        0,
+        0,
+        0,
+      );
+      const endOfToday = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        23,
+        59,
+        59,
+      );
+
+      // Get only today's attendances
+      const todayAttendances = await this.attendanceRepository
+        .createQueryBuilder('attendance')
+        .leftJoinAndSelect('attendance.hub', 'hub')
+        .where('attendance.checkInTime >= :startOfToday', { startOfToday })
+        .andWhere('attendance.checkInTime <= :endOfToday', { endOfToday })
+        .getMany();
+
+      // Create a new hubSet,
+      const newHubs = todayAttendances.map((attendace) => attendace.hub.name);
+      const newHubSet = new Set(newHubs);
+      const newHubsArray = [...newHubSet];
+
+      const modifiedNewHubsArray = newHubsArray.map(
+        (hubName) => `${hubName}_total`,
+      );
+
+      // Now calculate today's total attendances for each hub.
+      const attendancesPerHub = {};
+      modifiedNewHubsArray.forEach((hub) => {
+        attendancesPerHub[hub] = 0;
+      });
+
+      todayAttendances.forEach((attendance) => {
+        attendancesPerHub[`${attendance.hub.name}_total`] += 1;
+      });
+
+      return { ...activeAttendances, ...attendancesPerHub };
     } catch (error) {
       throw new InternalServerErrorException(SERVER_ERROR);
     }
