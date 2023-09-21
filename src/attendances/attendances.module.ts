@@ -18,6 +18,7 @@ import { DeleteAttendanceHandler } from './commands/handlers/delete-attendance.h
 import { CheckoutAttendanceHandler } from './commands/handlers/checkout-attendance.handler';
 import { GetActiveAttendancesHandler } from './queries/handlers/get-active-attendances.handler';
 import { CheckoutAllAttendancesHandler } from './commands/handlers/checkout-all-attendances.handler';
+import { GetAttendanceStatsHandler } from './queries/handlers/get-attendance-stats.handler';
 
 // Import additional dependencies
 import { HubsModule } from 'src/hubs/hubs.module';
@@ -43,6 +44,7 @@ import { SettingModule } from 'src/setting/setting.module';
     CheckoutAttendanceHandler,
     GetActiveAttendancesHandler,
     CheckoutAllAttendancesHandler,
+    GetAttendanceStatsHandler,
   ],
 })
 export class AttendancesModule {}

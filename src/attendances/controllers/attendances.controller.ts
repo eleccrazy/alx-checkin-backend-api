@@ -17,6 +17,7 @@ import { DeleteAttendanceCommand } from '../commands/implementation/delete-atten
 import { CheckoutAttendanceCommand } from '../commands/implementation/checkout-attendance.command';
 import { GetActiveAttendancesQuery } from '../queries/implementation/get-active-attendances.query';
 import { CheckoutAllAttendancesCommand } from '../commands/implementation/checkout-all-attendances.command';
+import { GetAttendanceStatsQuery } from '../queries/implementation/get-attendance-stats';
 
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
@@ -24,7 +25,6 @@ import {
   CreateAttendanceDto,
   CheckoutAllAttendanceDto,
 } from '../dtos/attendances.dtos';
-import { paymentsresellersubscription } from 'googleapis/build/src/apis/paymentsresellersubscription';
 
 @Controller('attendances')
 @ApiTags('Documentation for attendances route')
@@ -61,6 +61,15 @@ export class AttendancesController {
     return await this.commandBus.execute(
       new CheckoutAllAttendancesCommand(payload.hubId),
     );
+  }
+
+  // Get attendance stats for the current week and last week.
+  @Get('/stats')
+  @ApiOperation({
+    summary: 'Get attendance stats for the current week and last week',
+  })
+  async getAttendanceStats() {
+    return await this.queryBus.execute(new GetAttendanceStatsQuery());
   }
 
   // Get active attendances for a specific hub
