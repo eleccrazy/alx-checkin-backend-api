@@ -64,8 +64,10 @@ export class ProgramsQueryService implements IProgramsQueryService {
       if (!program) {
         throw new NotFoundException(NOT_FOUND_MESSAGE);
       }
+      // Sort Cohorts by name
+      const cohorts = program.cohorts.sort((a: any, b: any) => a.name - b.name);
       // return the cohorts
-      return program.cohorts;
+      return cohorts;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
