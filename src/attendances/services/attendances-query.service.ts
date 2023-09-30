@@ -137,10 +137,11 @@ export class AttendancesQueryService implements IAttendancesQueryService {
         today.getMonth(),
         today.getDate() - today.getDay(),
       );
+
       const currentWeekEnd = new Date(
         today.getFullYear(),
         today.getMonth(),
-        today.getDate() + (6 - today.getDay()),
+        today.getDate() + (6 - today.getDay() + 1), // Add 1 to the offset to account for Saturday being the last day of the week
       );
 
       // Get the start and end dates for the last week
