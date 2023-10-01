@@ -1,6 +1,6 @@
-import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IAttendancesCommandService } from '../interfaces/attendances.interface';
-import { Repository, QueryFailedError } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttendanceEntity } from 'src/entities/attendances.entity';
 import { StudentsQueryService } from 'src/students/services/students-query.service';
@@ -41,6 +41,7 @@ export class AttendancesCommandService implements IAttendancesCommandService {
       // Create new attendance
       const attendance = new AttendanceEntity();
       // Update the fileds of the attendance object
+
       attendance.student = student;
       attendance.checkInTime = new Date();
       // Check if we have hubId

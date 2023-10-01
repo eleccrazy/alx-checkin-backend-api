@@ -127,29 +127,49 @@ export class AttendancesQueryService implements IAttendancesQueryService {
   // Get attendance stats for the last week and the current week.
   async getAttendanceStats(): Promise<any> {
     try {
+      /*
+      // Get the current date
+      const currentDate = new Date();
+      const currentWeekStats: any = {};
+      const lastWeekStats: any = {};
+
+      // Calculate the day index of the current date (0 for Sunday, 1 for Monday, and so on)
+      const currentDayIndex = currentDate.getDay();
+
+      // Calculate the difference between the current day and Sunday (assuming Sunday as the first day of the week)
+      const daysToSunday = (currentDayIndex + 7 - 0) % 7;
+
+      // Calculate the start date of the current week (Sunday)
+      const currentWeekStart = new Date(currentDate);
+      currentWeekStart.setDate(currentDate.getDate() - daysToSunday);
+
+      // Calculate the end date of the current week (Saturday)
+      const currentWeekEnd = new Date(currentWeekStart);
+      currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+
+      */
       const today = new Date();
       const currentWeekStats: any = {};
       const lastWeekStats: any = {};
 
       // Get the start and end dates for the current week
-      const currentWeekStart = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() - today.getDay(),
-      );
+      const currentDayIndex = today.getDay();
+      const daysToSunday = (currentDayIndex + 7 - 0) % 7;
 
-      const currentWeekEnd = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() + (6 - today.getDay() + 1), // Add 1 to the offset to account for Saturday being the last day of the week
-      );
+      const currentWeekStart = new Date(today);
+      currentWeekStart.setDate(today.getDate() - daysToSunday);
+      currentWeekStart.setUTCHours(0, 0, 0, 0); // Set time to 00:00:00.000
+
+      const currentWeekEnd = new Date(currentWeekStart);
+      currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+      currentWeekEnd.setUTCHours(23, 59, 59, 999); // Set time to 23:59:59.999
 
       // Get the start and end dates for the last week
       const lastWeekStart = new Date(currentWeekStart);
       lastWeekStart.setDate(lastWeekStart.getDate() - 7);
       const lastWeekEnd = new Date(currentWeekStart);
       lastWeekEnd.setDate(lastWeekEnd.getDate() - 1);
-
+      lastWeekEnd.setHours(23, 59, 59, 999);
       // Query attendance records for the current week
       const currentWeekAttendances = await this.attendanceRepository.find({
         where: {
