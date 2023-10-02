@@ -24,6 +24,7 @@ export class CohortsQueryService implements ICohortsQueryService {
       const cohorts = await this.cohortRepository.find({
         relations: ['program'],
       });
+      cohorts.sort((a: any, b: any) => a.name - b.name);
       return cohorts;
     } catch (error) {
       throw new InternalServerErrorException(SOMETHING_WENT_WRONG);
