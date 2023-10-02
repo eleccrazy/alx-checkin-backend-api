@@ -8,6 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
+import { CohortEntity } from 'src/entities/cohorts.entity';
 
 const NOT_FOUND_MESSAGE = 'Program does not exist';
 
@@ -65,7 +66,8 @@ export class ProgramsQueryService implements IProgramsQueryService {
         throw new NotFoundException(NOT_FOUND_MESSAGE);
       }
       // Sort Cohorts by name
-      const cohorts = program.cohorts.sort((a: any, b: any) => a.name - b.name);
+      const cohorts = program.cohorts;
+      cohorts.sort((a: any, b: any) => a.name - b.name);
       // return the cohorts
       return cohorts;
     } catch (error) {
