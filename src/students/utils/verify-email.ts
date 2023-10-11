@@ -6,6 +6,7 @@ const verifyEmail = async (email: string) => {
     const res = await validate(email);
     // Check if the result has a reason.
     if (res.reason) {
+      console.log(res.reason);
       // If the email is not valid, return false
       return false;
     }
